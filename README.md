@@ -10,3 +10,14 @@ A healthy node will return HTTP status 200, and a node that should not be access
 
 Several commandline flags are supported (see the code.)
 
+- build
+
+```bash
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+```
+
+- run cmd
+
+```bash
+galera-healthcheck -host=127.0.0.1 -user=system -password=System@123 -port=8081 -availWhenDonor=true -availWhenReadOnly=true -pidfile=/var/run/galera-healthcheck-2.pid
+```

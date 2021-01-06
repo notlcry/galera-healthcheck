@@ -20,6 +20,18 @@ var serverPort = flag.Int(
 	"Specifies the port of the healthcheck server",
 )
 
+var mysqlHost = flag.String(
+	"host",
+	"127.0.0.1",
+	"Specifies the MySQL host to connect as",
+)
+
+var mysqlPort = flag.String(
+	"mport",
+	"3306",
+	"Specifies the MySQL port to connect as",
+)
+
 var mysqlUser = flag.String(
 	"user",
 	"root",
@@ -80,7 +92,7 @@ func main() {
 		panic(err)
 	}
 
-	db, _ := sql.Open("mysql", fmt.Sprintf("%s:%s@/", *mysqlUser, *mysqlPassword))
+	db, _ := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/", *mysqlUser, *mysqlPassword, *mysqlHost, *mysqlPort))
 	config := healthcheck.HealthcheckerConfig{
 		*availableWhenDonor,
 		*availableWhenReadOnly,
