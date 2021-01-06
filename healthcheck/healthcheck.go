@@ -66,7 +66,20 @@ func (h *Healthchecker) Check() (*HealthResult, string) {
 			}
 		}
 	}
-	
+
 	old_state = state
 	return res, msg
+}
+
+func (h *Healthchecker) GetSeq() string {
+	var variable_name string
+	var state string
+	var seq string
+	err := h.db.QueryRow("SHOW STATUS LIKE 'wsrep_last_committed'").Scan(&variable_name, &state)
+	if err != nil {
+		seq = "-1"
+	} else {
+		seq = state
+	}
+	return seq
 }

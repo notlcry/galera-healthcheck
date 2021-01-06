@@ -9,9 +9,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/sttts/galera-healthcheck/healthcheck"
-	. "github.com/sttts/galera-healthcheck/logger"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/notlcry/galera-healthcheck/healthcheck"
+	. "github.com/notlcry/galera-healthcheck/logger"
 )
 
 var serverPort = flag.Int(
@@ -84,6 +84,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	LogWithTimestamp(msg)
 }
 
+func handlerSeq(w http.ResponseWriter, r *http.Request) {
+	result, msg := healthchecker.GetSeq()
+	if result != nil && result.Healthy {
+		w.WriteHeader(http.StatusOK)
+	} else if result != nil && !result.Healthy {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	} else {
+		w.WriteHeader(http.StatusContinue)
+	}
+
+	fmt.Fprintf(w, "seq is: %s", msg)
+	LogWithTimestamp(msg)
+}
+
 func main() {
 	flag.Parse()
 
@@ -101,5 +115,6 @@ func main() {
 	healthchecker = healthcheck.New(db, config)
 
 	http.HandleFunc("/", handler)
+	http.HandleFunc("/seq", handlerSeq)
 	http.ListenAndServe(fmt.Sprintf(":%d", *serverPort), nil)
 }
