@@ -85,17 +85,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerSeq(w http.ResponseWriter, r *http.Request) {
-	result, msg := healthchecker.GetSeq()
-	if result != nil && result.Healthy {
-		w.WriteHeader(http.StatusOK)
-	} else if result != nil && !result.Healthy {
-		w.WriteHeader(http.StatusServiceUnavailable)
+	seq := healthchecker.GetSeq()
+	if seq == "-1" {
+		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.WriteHeader(http.StatusContinue)
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%s", seq)
 	}
-
-	fmt.Fprintf(w, "seq is: %s", msg)
-	LogWithTimestamp(msg)
+	LogWithTimestamp(seq)
 }
 
 func main() {
