@@ -85,7 +85,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerSeq(w http.ResponseWriter, r *http.Request) {
-	result, msg := healthchecker.GetSeq()
+	result, msg := healthchecker.Check()
 	if result != nil && result.Healthy {
 		w.WriteHeader(http.StatusOK)
 	} else if result != nil && !result.Healthy {
